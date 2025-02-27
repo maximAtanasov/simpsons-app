@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('character');
             $table->text('image_url');
             $table->enum('character_direction', ['Left', 'Right']);
-            $table->timestamps();
+            $table->timestamp('created_at');
         });
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\QuoteService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
 
 class QuoteController extends Controller
 {
@@ -20,8 +21,12 @@ class QuoteController extends Controller
      */
     public function index(): JsonResponse
     {
-        //TODO: Test
         $quotes = $this->quoteService->fetchLatestQuotes();
-        return response()->json($quotes);
+
+        $formattedQuotes = collect($quotes)->map(function ($quote) {
+            return collect($quote)->keyBy(fn ($value, $key) => Str::camel($key))->all();
+        });
+
+        return response()->json($formattedQuotes);
     }
 }

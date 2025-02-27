@@ -1,0 +1,24 @@
+<div class="quote-list">
+  <button (click)="fetchQuotes()">Get another quote</button>
+  <p class="error-message" *ngIf="error">{{ error }}</p>
+  <span *ngIf="quotes.length === 0 || showSpinner" class="loader"></span>
+  <div *ngIf="quotes">
+    <ul>
+      <li *ngFor="let item of quotes">
+        <div class="card" [ngClass]="item.characterDirection.toLowerCase()">
+          <div *ngIf="item.characterDirection === CharacterDirection.RIGHT">
+            <p class="quote">{{ item.text }}</p>
+            <p class="character-name">- {{item.character}}</p>
+          </div>
+          <div class="character-image" [ngClass]="'img-' + item.characterDirection.valueOf().toLowerCase()">
+            <img src="{{item.imageUrl}}}" height="200px" alt="{{item.character}}">
+          </div>
+          <div *ngIf="item.characterDirection === CharacterDirection.LEFT">
+            <p class="quote">{{ item.text }}</p>
+            <p class="character-name">- {{item.character}}</p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
