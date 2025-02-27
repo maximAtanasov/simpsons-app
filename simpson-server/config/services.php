@@ -34,5 +34,7 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'simpsons_api' => [
+        'url' => env('SIMPSONS_QUOTE_API_URL', 'https://thesimpsonsquoteapi.glitch.me'),
+    ],
 ];
