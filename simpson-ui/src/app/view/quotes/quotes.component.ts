@@ -1,15 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {QuoteService} from '../../service/quote.service';
 import {Quote} from '../../model/quote';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {CharacterDirection} from '../../model/character-direction';
 
 @Component({
   selector: 'app-quotes',
   imports: [
     NgForOf,
-    NgIf,
-    NgClass
+    NgIf
   ],
   templateUrl: './quotes.component.html',
   styleUrl: './quotes.component.scss'

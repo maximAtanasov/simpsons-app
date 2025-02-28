@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {catchError, map, Observable, throwError} from 'rxjs';
+import {catchError, Observable, throwError} from 'rxjs';
 import {Quote} from '../model/quote';
 
 @Injectable({
@@ -8,7 +8,7 @@ import {Quote} from '../model/quote';
 })
 export class QuoteService {
 
-  private readonly apiUrl = "http://localhost:8080/api/quote";
+  private readonly apiUrl = "http://localhost:8080/api/quotes";
 
   constructor(private readonly http: HttpClient) { }
 

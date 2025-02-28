@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuoteController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/quote', [QuoteController::class, 'index'])->name('api.quote');
+Route::post('/login', [AuthController::class, 'login']);
 
+//Protected endpoints
+Route::middleware('auth:sanctum')->get('/quotes', [QuoteController::class, 'index']);
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
