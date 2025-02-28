@@ -1,22 +1,21 @@
 <div class="logo">
-  <img src="simpsons.png" alt="Simpsons" width="400">
+    <img src="simpsons.png" alt="Simpsons" width="400">
 </div>
 <div class="login-form">
-  <p class="error-message" *ngIf="error">{{error}}</p>
+    <p class="error-message" *ngIf="error">{{ error }}</p>
 
-  <form (ngSubmit)="login()" ngNativeValidate>
+    <form (ngSubmit)="login()" ngNativeValidate>
 
-    <div class="form-field">
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" required [(ngModel)]="username">
-    </div>
+        <div class="form-field">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required [(ngModel)]="username">
+        </div>
 
-    <div class="form-field">
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required [(ngModel)]="password">
-    </div>
+        <div class="form-field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required [(ngModel)]="password">
+        </div>
 
-    <button type="submit">Login</button>
-  </form>
-
+        <button type="submit">Login</button>
+    </form>
 </div>

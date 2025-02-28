@@ -35,15 +35,4 @@ class AuthController extends Controller
 
         return response()->json(['token' => $token]);
     }
-
-    /**
-     * //TODO: Do I need a log out really?
-     * Logout the user by revoking the token.
-     */
-    public function logout(Request $request): JsonResponse
-    {
-        $request->user()->tokens()->delete();
-
-        return response()->json(['message' => 'Logged out']);
-    }
 }

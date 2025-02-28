@@ -20,18 +20,16 @@ export class LoginComponent implements OnInit {
   username: string = "";
   password: string = "";
 
-  constructor(private readonly authService: AuthService, private readonly router: Router) {
+  constructor(private readonly authService: AuthService,
+              private readonly router: Router) {
   }
 
-  login() {
-    console.log(this.authService.getToken())
-
+  login(): void {
     this.authService.login(this.username, this.password).subscribe({
       next: () => {
         this.router.navigate(['/quotes']);
       },
       error: (err) => {
-        console.log(err);
         if(err.status === 401) {
           this.error = 'Invalid credentials';
         } else {
@@ -44,7 +42,6 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     if (this.authService.getToken() !== null) {
       this.router.navigate(['/quotes']);
-      return;
     }
   }
 }
