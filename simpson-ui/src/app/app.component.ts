@@ -4,7 +4,7 @@ import {QuotesComponent} from './view/quotes/quotes.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, QuotesComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

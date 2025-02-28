@@ -1,16 +1,22 @@
-<div class="quote-list">
-  <button (click)="fetchQuotes()">Get another quote</button>
-  <p class="error-message" *ngIf="error">{{ error }}</p>
+<div class="center">
+  <button (click)="fetchQuotes()" [disabled]="showSpinner">Get another quote</button>
+</div>
+<div class="center">
+  <p class="error-message" *ngIf="error">Error: {{ error }}</p>
+</div>
+<div class="center">
   <span *ngIf="quotes.length === 0 || showSpinner" class="loader"></span>
+</div>
+<div class="quote-list">
   <div *ngIf="quotes">
     <ul>
       <li *ngFor="let item of quotes">
-        <div class="card" [ngClass]="item.characterDirection.toLowerCase()">
+        <div class="card" [class]="item.characterDirection.toLowerCase()">
           <div *ngIf="item.characterDirection === CharacterDirection.RIGHT">
             <p class="quote">{{ item.text }}</p>
             <p class="character-name">- {{item.character}}</p>
           </div>
-          <div class="character-image" [ngClass]="'img-' + item.characterDirection.valueOf().toLowerCase()">
+          <div class="character-image">
             <img src="{{item.imageUrl}}}" height="200px" alt="{{item.character}}">
           </div>
           <div *ngIf="item.characterDirection === CharacterDirection.LEFT">

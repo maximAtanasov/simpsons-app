@@ -1,26 +1,37 @@
 version: '3.8'
 
 services:
-    app:
-        image: php:8.2-fpm
+    server:
+        build:
+            context: ./simpson-server
+            dockerfile: Dockerfile
+        image: laravel_app
         container_name: laravel_app
-        working_dir: /var/www
-        volumes:
-            - .:/var/www
         depends_on:
-            - db
+            db:
+                condition: service_healthy
         ports:
             - "8080:8080"
         command: bash -c "php artisan migrate && php artisan serve --host=0.0.0.0 --port=8080"
         networks:
             - laravel
+
+    ui:
         build:
-            context: .
+            context: ./simpson-ui
             dockerfile: Dockerfile
+        image: angular_app
+        container_name: ui
+        depends_on:
+            - server
+        ports:
+            - "8081:80"
+        networks:
+            - laravel
 
     db:
         image: postgres:17
-        container_name: laravel_db
+        container_name: db
         restart: always
         environment:
             POSTGRES_DB: laravel
@@ -30,6 +41,11 @@ services:
             - "5432:5432"
         networks:
             - laravel
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+            interval: 5s
+            timeout: 5s
+            retries: 5
 
 networks:
     laravel:

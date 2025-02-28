@@ -19,7 +19,7 @@ export class QuotesComponent implements OnInit {
   quotes: Quote[] = [];
   showSpinner: boolean = false;
 
-  error: string | null = "null";
+  error: string | null = null;
 
   constructor(private readonly quoteService: QuoteService) {
   }
@@ -31,18 +31,20 @@ export class QuotesComponent implements OnInit {
   fetchQuotes(): void {
     this.error = null;
     this.showSpinner = true;
-    this.quotes.pop();
+    if (this.quotes.length === 5) {
+      this.quotes.pop();
+    }
     this.quoteService.getData().subscribe({
       next: (result: any[]) => {
-        console.log(result);
         this.quotes = result;
         this.showSpinner = false;
       },
       error: (err) => {
-        console.error(err);
         this.error = err.message;
+        this.showSpinner = false;
       }
     });
   }
+
   protected readonly CharacterDirection = CharacterDirection;
 }
