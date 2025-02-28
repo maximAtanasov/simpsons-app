@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import {QuotesComponent} from './view/quotes/quotes.component';
+import {LoginComponent} from './view/login/login.component';
 
 export const routes: Routes = [
   {
@@ -7,7 +8,11 @@ export const routes: Routes = [
     component: QuotesComponent
   },
   {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
   path: '',
-  redirectTo: '/quotes',
+  redirectTo: '/login',
   pathMatch: 'full'
 }];

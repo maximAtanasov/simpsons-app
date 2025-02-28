@@ -1,23 +1,34 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, Observable, throwError} from 'rxjs';
 import {Quote} from '../model/quote';
+import {AppComponent} from '../app.component';
+import {AuthService} from './auth.service';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuoteService {
 
-  private readonly apiUrl = "http://localhost:8080/api/quotes";
-
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient,
+              private readonly authService: AuthService,
+              private readonly router: Router) {
+  }
 
   getData(): Observable<Quote[]> {
-    return this.http.get<Quote[]>(this.apiUrl)
-      .pipe(catchError(this.handleError.bind(this)));
+    return this.http.get<Quote[]>(`${AppComponent.API_URL}/quotes`, {
+      headers: {
+        'Authorization': `Bearer ${this.authService.getToken()}`,
+        'Content-Type': 'application/json'
+      }
+    }, ).pipe(catchError(this.handleError.bind(this)));
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    return throwError(() => new Error(error.message || 'Server Error'));
+    if(error.status === 401) {
+      this.router.navigate(['/login']);
+    }
+    return throwError(() => new Error(error.message));
   }
 }
