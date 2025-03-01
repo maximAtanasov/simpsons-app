@@ -6,10 +6,10 @@ use App\Services\QuoteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 
-class QuoteController extends Controller
+readonly class QuoteController
 {
 
-    private $quoteService;
+    private QuoteService $quoteService;
 
     public function __construct(QuoteService $quoteService)
     {
@@ -19,12 +19,12 @@ class QuoteController extends Controller
     /**
      * @return JsonResponse with the last five quotes sorted by their creation date.
      */
-    public function index(): JsonResponse
+    public function fetchQuotes(): JsonResponse
     {
         $quotes = $this->quoteService->fetchLatestQuotes();
 
         $formattedQuotes = collect($quotes)->map(function ($quote) {
-            return collect($quote)->keyBy(fn ($value, $key) => Str::camel($key))->all();
+            return collect($quote)->keyBy(fn($value, $key) => Str::camel($key))->all();
         });
 
         return response()->json($formattedQuotes);

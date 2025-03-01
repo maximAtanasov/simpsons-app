@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Enums\CharacterDirection;
+use App\Exceptions\ExternalApiUrlUndefinedException;
 use App\Models\Quote;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
@@ -14,12 +16,15 @@ class QuoteService
 {
     private string $apiUrl;
 
+    /**
+     * @throws ExternalApiUrlUndefinedException when the SIMPSONS_QUOTE_API_URL is not defined.
+     */
     public function __construct()
     {
         $this->apiUrl = Config::get('services.simpsons_api.url');
 
         if (!$this->apiUrl) {
-            throw new \Exception('SIMPSONS_QUOTE_API_URL is not defined.');
+            throw new ExternalApiUrlUndefinedException('SIMPSONS_QUOTE_API_URL is not defined.');
         }
     }
 
@@ -63,7 +68,7 @@ class QuoteService
             } else {
                 Log::warning('Failed to fetch quotes from the API', ['status_code' => $response->status()]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error fetching quote: ' . $e->getMessage());
         }
     }
