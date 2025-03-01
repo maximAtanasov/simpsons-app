@@ -9,9 +9,11 @@ Please use Docker to run the App as follows:
 
 `docker compose up -d`
 
-The UI will then be available at http://localhost:5000
+The UI is available at http://localhost:5000
 
-The Back-End API is available at http://localhost:8080/api
+The Back-End API is available at http://localhost:8080/api 
+
+Additionally, the OpenAPI documentation may be viewed at http://localhost:8080/api/documentation 
 
 ## Using the App
 
