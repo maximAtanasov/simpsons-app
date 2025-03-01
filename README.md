@@ -1,5 +1,8 @@
 # The Simpsons-App
 
+![server](https://github.com/maximAtanasov/simpsons-app/actions/workflows/laravel.yml/badge.svg)
+![ui](https://github.com/maximAtanasov/simpsons-app/actions/workflows/node.js.yml/badge.svg)
+
 A small app using the Simpson Quote API implemented using Laravel and Angular. A small architectural overview of the application
 is available here: [Architecture](./docs/Architecture.pdf)
 

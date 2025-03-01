@@ -1,5 +1,5 @@
-# GitHub Action for Laravel with PostgreSQL and Redis
-name: Testing Laravel with PostgreSQL
+# GitHub Action for Laravel with PostgreSQL
+name: Server
 on: [push, pull_request]
 jobs:
   laravel:
@@ -7,9 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BROADCAST_DRIVER: log
-      CACHE_DRIVER: redis
-      QUEUE_CONNECTION: redis
-      SESSION_DRIVER: redis
       DB_CONNECTION: pgsql
       DB_HOST: localhost
       DB_PASSWORD: postgres
@@ -28,11 +25,6 @@ jobs:
           - 5432/tcp
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
 
-      redis:
-        image: redis
-        ports:
-          - 6379/tcp
-        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
       matrix:
@@ -87,11 +79,9 @@ jobs:
         working-directory: ./simpson-server
         env:
           DB_PORT: ${{ job.services.postgres.ports[5432] }}
-          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
 
       - name: Test with phpunit
         working-directory: ./simpson-server
         run: vendor/bin/phpunit --coverage-text
         env:
           DB_PORT: ${{ job.services.postgres.ports[5432] }}
-          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
