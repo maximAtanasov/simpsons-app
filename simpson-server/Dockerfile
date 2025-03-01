@@ -1,5 +1,5 @@
 ## Dockerfile for a PHP install with the PGSQL extension
-FROM php:8.2-fpm
+FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
     zip unzip \

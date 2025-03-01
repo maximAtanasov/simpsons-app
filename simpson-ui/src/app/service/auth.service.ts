@@ -25,8 +25,4 @@ export class AuthService {
   public getToken(): string | null {
     return sessionStorage.getItem(this.TOKEN_KEY);
   }
-
-  public removeToken(): void {
-    sessionStorage.removeItem(this.TOKEN_KEY);
-  }
 }

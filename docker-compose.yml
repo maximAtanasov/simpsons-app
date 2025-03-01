@@ -1,33 +1,29 @@
-version: '3.8'
-
 services:
     server:
         build:
             context: ./simpson-server
             dockerfile: Dockerfile
-        image: laravel_app
         container_name: server
         depends_on:
             db:
                 condition: service_healthy
         ports:
             - "8080:8080"
-        command: bash -c "php artisan migrate && php artisan db:seed && php artisan serve --host=0.0.0.0 --port=8080"
+        command: bash -c "php artisan migrate:refresh --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=8080"
         networks:
-            - laravel
+            - simpsons
 
     ui:
         build:
             context: ./simpson-ui
             dockerfile: Dockerfile
-        image: angular_app
         container_name: ui
         depends_on:
             - server
         ports:
-            - "8081:80"
+            - "5000:80"
         networks:
-            - laravel
+            - simpsons
 
     db:
         image: postgres:17
@@ -40,7 +36,7 @@ services:
         ports:
             - "5432:5432"
         networks:
-            - laravel
+            - simpsons
         healthcheck:
             test: [ "CMD-SHELL", "pg_isready -U postgres" ]
             interval: 5s
@@ -48,4 +44,4 @@ services:
             retries: 5
 
 networks:
-    laravel:
+    simpsons:
