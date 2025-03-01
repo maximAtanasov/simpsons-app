@@ -1,0 +1,24 @@
+@startuml
+title System Architecture - Sequence Diagram
+
+actor User
+participant "Angular UI" as UI
+participant "Laravel Backend" as Server
+database "PostgreSQL" as DB
+participant "Simpsons Quote API (External Service)" as API
+
+User -> UI : Enters username & password
+UI -> Server : POST /api/login (JSON)
+Server -> DB : Fetches user with username
+DB -> Server : Returns user data
+Server -> Server : Validates user credentials
+Server -> UI : Returns token
+
+User -> UI : Requests quotes
+UI -> Server : GET /api/quote {Header: Bearer Auth}
+Server -> API : Fetches new quote (GET /quotes {Header: Bearer Auth})
+API -> Server : Returns new quote (JSON)
+Server -> DB : Stores new quote, deletes oldest if more than 5 present
+DB -> Server : Retrieves last 5 quotes
+Server -> UI : Returns quotes (JSON)
+@enduml

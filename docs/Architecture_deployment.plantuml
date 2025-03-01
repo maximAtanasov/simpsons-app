@@ -1,0 +1,19 @@
+@startuml
+title System Architecture - Deployment Diagram
+
+node Client <<Web browser>> as browser
+
+node docker <<host>> {
+    node "Angular UI" as UI
+    node "Laravel Backend" as server
+    database "PostgreSQL" as db
+}
+
+node "Simpsons Quote API" <<external>> as API
+
+browser -> UI: HTTP:5000
+UI -> server : HTTP:8080
+server -> db: PostgreSQL:5432
+
+server --> API: HTTP:80
+@enduml
