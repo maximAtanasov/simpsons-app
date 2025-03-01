@@ -4,41 +4,49 @@ namespace App\Services;
 
 use App\Enums\CharacterDirection;
 use App\Exceptions\ExternalApiUrlUndefinedException;
+use App\Exceptions\UnableToFetchQuotesException;
 use App\Models\Quote;
+use App\Repositories\QuoteRepository;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class QuoteService
 {
+    private QuoteRepository $quoteRepository;
     private string $apiUrl;
 
     /**
+     * @param QuoteRepository $quoteRepository
+     * @param Http $httpClient
      * @throws ExternalApiUrlUndefinedException when the SIMPSONS_QUOTE_API_URL is not defined.
      */
-    public function __construct()
+    public function __construct(QuoteRepository $quoteRepository)
     {
         $this->apiUrl = Config::get('services.simpsons_api.url');
 
         if (!$this->apiUrl) {
             throw new ExternalApiUrlUndefinedException('SIMPSONS_QUOTE_API_URL is not defined.');
         }
+        $this->quoteRepository = $quoteRepository;
     }
 
     /**
      * Fetches a new quote and persists it. If more than 5 quotes are present, the oldest one is deleted.
-     * @return Collection with the last five quotes sorted by their creation date.
+     * @return Collection<Quote> with the last five quotes sorted by their creation date.
+     * @throws UnableToFetchQuotesException when the Quotes API is unreachable or returns an unexpected response.
      */
     public function fetchLatestQuotes(): Collection
     {
-        //TODO: Test
         $this->fetchAndStoreQuote();
-        return Quote::query()->orderBy(Model::CREATED_AT, 'desc')->limit(5)->get();
+        return $this->quoteRepository->findAllOrderByCreatedAtDesc();
     }
 
+    /**
+     * @throws UnableToFetchQuotesException when the Quotes API is unreachable or returns an unexpected response.
+     */
     private function fetchAndStoreQuote(): void
     {
         try {
@@ -52,24 +60,23 @@ class QuoteService
 
                     Log::info('Fetched quote from API:', ['data' => $quoteData]);
 
-                    if (Quote::count() >= 5) {
-                        Quote::oldest()->first()?->delete();
+                    if ($this->quoteRepository->count() >= 5) {
+                        $this->quoteRepository->deleteOldest();
                     }
 
-                    Quote::create([
-                        'text' => $quoteData['quote'],
-                        'character' => $quoteData['character'],
-                        'image_url' => $quoteData['image'],
-                        'character_direction' => CharacterDirection::from($quoteData['characterDirection'])
-                    ]);
+                    $this->quoteRepository->createQuote(
+                        $quoteData['quote'],
+                        $quoteData['character'],
+                        $quoteData['image'],
+                        CharacterDirection::from($quoteData['characterDirection']));
                 } else {
-                    Log::warning('No quotes returned in the API response.');
+                    throw new UnableToFetchQuotesException('No quotes returned in the API response.');
                 }
             } else {
-                Log::warning('Failed to fetch quotes from the API', ['status_code' => $response->status()]);
+                throw new UnableToFetchQuotesException('Failed to fetch quotes from the API', ['status_code' => $response->status()]);
             }
         } catch (Exception $e) {
-            Log::error('Error fetching quote: ' . $e->getMessage());
+            throw new UnableToFetchQuotesException('Error fetching quote: ', 0, $e);
         }
     }
 }

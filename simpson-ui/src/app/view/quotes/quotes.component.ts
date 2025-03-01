@@ -19,6 +19,7 @@ export class QuotesComponent implements OnInit {
   showSpinner: boolean = false;
 
   error: string | null = null;
+  protected readonly CharacterDirection = CharacterDirection;
 
   constructor(private readonly quoteService: QuoteService) {
   }
@@ -39,11 +40,13 @@ export class QuotesComponent implements OnInit {
         this.showSpinner = false;
       },
       error: (err) => {
-        this.error = err.message;
+        if (err.status === 503) {
+          this.error = err.error;
+        } else {
+          this.error = err.message;
+        }
         this.showSpinner = false;
       }
     });
   }
-
-  protected readonly CharacterDirection = CharacterDirection;
 }

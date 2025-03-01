@@ -83,7 +83,7 @@ jobs:
         run: php artisan config:clear
 
       - name: Run Migration
-        run: php artisan migrate -v
+        run: php artisan migrate -v --force
         working-directory: ./simpson-server
         env:
           DB_PORT: ${{ job.services.postgres.ports[5432] }}

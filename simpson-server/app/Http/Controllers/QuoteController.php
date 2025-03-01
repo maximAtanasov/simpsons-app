@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\UnableToFetchQuotesException;
 use App\Services\QuoteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
@@ -21,7 +22,11 @@ readonly class QuoteController
      */
     public function fetchQuotes(): JsonResponse
     {
-        $quotes = $this->quoteService->fetchLatestQuotes();
+        try {
+            $quotes = $this->quoteService->fetchLatestQuotes();
+        } catch (UnableToFetchQuotesException) {
+            return response()->json(['error' => 'Unable to fetch quotes'], 503);
+        }
 
         $formattedQuotes = collect($quotes)->map(function ($quote) {
             return collect($quote)->keyBy(fn($value, $key) => Str::camel($key))->all();
