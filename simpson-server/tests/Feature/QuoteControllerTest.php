@@ -31,7 +31,6 @@ class QuoteControllerTest extends TestCase
 
         Quote::factory()->count(5)->create();
 
-        // given
         User::create([
             'username' => 'test',
             'password' => Hash::make('secret123'),
@@ -46,7 +45,7 @@ class QuoteControllerTest extends TestCase
         $response = $this->getJson('/api/quotes', ['Authorization' => 'Bearer ' . $response->json('token')]);
 
         //then
-        self::assertEquals(Response::HTTP_OK, $response->status());
+        $this->assertEquals(Response::HTTP_OK, $response->status());
         $response->assertJsonIsArray();
         $response->assertJsonCount(5);
         $response->assertJsonStructure([
@@ -66,6 +65,60 @@ class QuoteControllerTest extends TestCase
         $response = $this->getJson('/api/quotes');
 
         //then
-        self::assertEquals(Response::HTTP_UNAUTHORIZED, $response->status());
+        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->status());
+    }
+
+    public function testReturnsServiceUnavailableWhenResponseEmpty()
+    {
+        // given
+        $quoteData = [[]];
+
+        Http::fake([
+            "https://thesimpsonsquoteapi.glitch.me/quotes" => Http::response($quoteData),
+        ]);
+
+        Quote::factory()->count(5)->create();
+
+        User::create([
+            'username' => 'test',
+            'password' => Hash::make('secret123'),
+        ]);
+
+        $response = $this->postJson('/api/login', [
+            'username' => 'test',
+            'password' => 'secret123',
+        ]);
+
+        //when
+        $response = $this->getJson('/api/quotes', ['Authorization' => 'Bearer ' . $response->json('token')]);
+
+        //then
+        $this->assertEquals(Response::HTTP_SERVICE_UNAVAILABLE, $response->status());
+    }
+
+    public function testReturnsServiceUnavailableWhenQuoteApiUnavailable()
+    {
+        // given
+        Http::fake([
+            "https://thesimpsonsquoteapi.glitch.me/quotes" => Http::response([], 500),
+        ]);
+
+        Quote::factory()->count(5)->create();
+
+        User::create([
+            'username' => 'test',
+            'password' => Hash::make('secret123'),
+        ]);
+
+        $response = $this->postJson('/api/login', [
+            'username' => 'test',
+            'password' => 'secret123',
+        ]);
+
+        //when
+        $response = $this->getJson('/api/quotes', ['Authorization' => 'Bearer ' . $response->json('token')]);
+
+        //then
+        $this->assertEquals(Response::HTTP_SERVICE_UNAVAILABLE, $response->status());
     }
 }

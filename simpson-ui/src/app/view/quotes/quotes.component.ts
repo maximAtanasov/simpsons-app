@@ -3,6 +3,7 @@ import {QuoteService} from '../../service/quote.service';
 import {Quote} from '../../model/quote';
 import {NgForOf, NgIf} from '@angular/common';
 import {CharacterDirection} from '../../model/character-direction';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-quotes',
@@ -39,9 +40,9 @@ export class QuotesComponent implements OnInit {
         this.quotes = result;
         this.showSpinner = false;
       },
-      error: (err) => {
-        if (err.status === 503) {
-          this.error = err.error;
+      error: (err: HttpErrorResponse) => {
+        if (err.message.includes('503')) {
+          this.error = 'The Simpsons Quote API is unavailable.';
         } else {
           this.error = err.message;
         }

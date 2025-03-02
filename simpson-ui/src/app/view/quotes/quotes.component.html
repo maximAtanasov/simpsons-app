@@ -5,7 +5,7 @@
   <p class="error-message" *ngIf="error">Error: {{ error }}</p>
 </div>
 <div class="center">
-  <span *ngIf="quotes.length === 0 || showSpinner" class="loader"></span>
+  <span *ngIf="showSpinner" class="loader"></span>
 </div>
 <div class="quote-list">
   <div *ngIf="quotes">

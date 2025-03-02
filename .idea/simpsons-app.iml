@@ -121,6 +121,11 @@
       <excludeFolder url="file://$MODULE_DIR$/simpson-server/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/simpson-server/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/simpson-server/vendor/laravel/sanctum" />
+      <excludeFolder url="file://$MODULE_DIR$/simpson-server/vendor/darkaonline/l5-swagger" />
+      <excludeFolder url="file://$MODULE_DIR$/simpson-server/vendor/doctrine/annotations" />
+      <excludeFolder url="file://$MODULE_DIR$/simpson-server/vendor/psr/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/simpson-server/vendor/swagger-api/swagger-ui" />
+      <excludeFolder url="file://$MODULE_DIR$/simpson-server/vendor/zircote/swagger-php" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

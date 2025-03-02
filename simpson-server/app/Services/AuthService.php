@@ -6,7 +6,7 @@ use App\Exceptions\InvalidCredentialsException;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 
-class AuthService
+readonly class AuthService
 {
     private UserRepository $userRepository;
 

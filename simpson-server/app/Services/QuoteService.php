@@ -13,14 +13,13 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class QuoteService
+readonly class QuoteService
 {
     private QuoteRepository $quoteRepository;
     private string $apiUrl;
 
     /**
      * @param QuoteRepository $quoteRepository
-     * @param Http $httpClient
      * @throws ExternalApiUrlUndefinedException when the SIMPSONS_QUOTE_API_URL is not defined.
      */
     public function __construct(QuoteRepository $quoteRepository)
@@ -52,28 +51,22 @@ class QuoteService
         try {
             $response = Http::get($this->apiUrl . '/quotes');
 
-            if ($response->successful()) {
-                $simpsonQuotes = $response->json();
+            if ($response->successful() && isset($response->json()[0])) {
+                $quoteData = $response->json()[0];
 
-                if (isset($simpsonQuotes[0])) {
-                    $quoteData = $simpsonQuotes[0];
+                Log::info('Fetched quote from API:', ['data' => $quoteData]);
 
-                    Log::info('Fetched quote from API:', ['data' => $quoteData]);
-
-                    if ($this->quoteRepository->count() >= 5) {
-                        $this->quoteRepository->deleteOldest();
-                    }
-
-                    $this->quoteRepository->createQuote(
-                        $quoteData['quote'],
-                        $quoteData['character'],
-                        $quoteData['image'],
-                        CharacterDirection::from($quoteData['characterDirection']));
-                } else {
-                    throw new UnableToFetchQuotesException('No quotes returned in the API response.');
+                if ($this->quoteRepository->count() >= 5) {
+                    $this->quoteRepository->deleteOldest();
                 }
+
+                $this->quoteRepository->createQuote(
+                    $quoteData['quote'],
+                    $quoteData['character'],
+                    $quoteData['image'],
+                    CharacterDirection::from($quoteData['characterDirection']));
             } else {
-                throw new UnableToFetchQuotesException('Failed to fetch quotes from the API', ['status_code' => $response->status()]);
+                throw new UnableToFetchQuotesException('Failed to fetch quotes from the API');
             }
         } catch (Exception $e) {
             throw new UnableToFetchQuotesException('Error fetching quote: ', 0, $e);

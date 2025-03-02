@@ -13,6 +13,20 @@ class AuthServiceTest extends TestCase
     protected AuthService $authService;
     protected UserRepository $userRepositoryMock;
 
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->userRepositoryMock = Mockery::mock(UserRepository::class);
+        $this->authService = new AuthService($this->userRepositoryMock);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Mockery::close();
+    }
+
     public function testLoginSuccessfully()
     {
         //given
@@ -76,18 +90,5 @@ class AuthServiceTest extends TestCase
         //when / then
         $this->expectException(InvalidCredentialsException::class);
         $this->authService->login($username, $password);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->userRepositoryMock = Mockery::mock(UserRepository::class);
-        $this->authService = new AuthService($this->userRepositoryMock);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        Mockery::close();
     }
 }

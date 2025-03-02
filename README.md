@@ -1,4 +1,4 @@
-# The Simpsons-App
+# The Simpsons App
 
 ![server](https://github.com/maximAtanasov/simpsons-app/actions/workflows/laravel.yml/badge.svg)
 ![ui](https://github.com/maximAtanasov/simpsons-app/actions/workflows/node.js.yml/badge.svg)
@@ -27,6 +27,7 @@ Upon starting the UI, you will be greeted with the following login form:
 Please input the following credentials:
 
 username: `test`
+
 password: `password123`
 
 You will then be redirected to the main page:

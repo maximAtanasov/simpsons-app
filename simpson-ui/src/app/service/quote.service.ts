@@ -27,6 +27,9 @@ export class QuoteService {
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     if(error.status === 401) {
+      if(this.authService.getToken() != null) {
+        this.authService.removeToken();
+      }
       this.router.navigate(['/login']);
     }
     return throwError(() => new Error(error.message));

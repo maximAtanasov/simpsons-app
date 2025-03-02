@@ -12,7 +12,19 @@ class QuoteServiceTest extends TestCase
 {
     protected QuoteService $quoteService;
     protected QuoteRepository $quoteRepositoryMock;
-    protected Http $httpClientMock;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->quoteRepositoryMock = Mockery::mock(QuoteRepository::class);
+        $this->quoteService = new QuoteService($this->quoteRepositoryMock);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Mockery::close();
+    }
 
     public function testFetchesSavesAndReturnsNewQuote()
     {
@@ -87,19 +99,5 @@ class QuoteServiceTest extends TestCase
         //when / then
         $this->expectException(UnableToFetchQuotesException::class);
         $this->quoteService->fetchLatestQuotes();
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->quoteRepositoryMock = Mockery::mock(QuoteRepository::class);
-        //$this->httpClientMock = Mockery::mock(Http::class);
-        $this->quoteService = new QuoteService($this->quoteRepositoryMock);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        Mockery::close();
     }
 }
